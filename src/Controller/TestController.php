@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Repository\LivreRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -45,13 +46,10 @@ class TestController extends AbstractController
 
 
     #[Route('/livres', name: 'livres_show')]
-    public function livres_show(): Response
+    public function livres_show(LivreRepository $livreRepository): Response
     {
-        $books = array(
-            array('id' => 1, 'image' => '/images/Victor-Hugo.jpg', 'title' => 'Victor Hugo', 'description' => 'victor.hugo@gmail.com '),
-            array('id' => 2, 'image' => '/images/william.jpg', 'title' => ' William Shakespeare', 'description' =>  ' william.shakespeare@gmail.com'),
-            array('id' => 3, 'image' => '/images/Taha-Hussein.jpg', 'title' => 'Taha Hussein', 'description' => 'taha.hussein@gmail.com'),
-            );
+        $books = $livreRepository->findAll();
+               
         return $this->render('livres.html.twig', 
     ['books' => $books]);
     }
