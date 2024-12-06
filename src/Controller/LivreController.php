@@ -32,61 +32,61 @@ class LivreController extends AbstractController
     }
 
     #[Route('/book/nouveau', name: 'nouveau_Book')]
-    #[Route('/book/edit/{id}', name: 'edit_Book')]
-    public function manageBook(
-        Request $request,
-        EntityManagerInterface $entityManager,
-        LoggerInterface $logger,
-        LivreRepository $bookRepository,
-        SluggerInterface $slugger,
-        ?Livre $book = null
-    ): Response {
-        if (!$book) {
-            $book = new Livre();
-        }
-
-        if ($request->attributes->get('_route') === 'edit_Book') {
-            $id = $request->get('id');
-            $book = $bookRepository->find($id);
-            if (!$book) {
-                throw $this->createNotFoundException('No book found for id ' . $id);
-            }
-        }
-
-        $form = $this->createForm(LivreType::class, $book);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $imageFile = $form->get('ImageLivre')->getData();
-            if ($imageFile) {
-                $originalFilename = pathinfo($imageFile->getClientOriginalName(), PATHINFO_FILENAME);
-                $safeFilename = $slugger->slug($originalFilename);
-                $newFilename = $safeFilename . '-' . uniqid() . '.' . $imageFile->guessExtension();
-
-                try {
-                    $imageFile->move(
-                        $this->getParameter('photos_directory'),
-                        $newFilename
-                    );
-                } catch (FileException $e) {
-                    $logger->error('Failed to upload image: ' . $e->getMessage());
-                }
-
-                $book->setImageLivre($newFilename);
-            }
-
-            $entityManager->persist($book);
-            $entityManager->flush();
-
-            return $this->redirectToRoute('app_read');
-        }
-
-        return $this->render('livre/new.html.twig', [
-            'form' => $form->createView(),
-            'editMode' => $book->getId() !== null,
-            'book' => $book,
-        ]);
+#[Route('/book/edit/{id}', name: 'edit_Book')]
+public function manageBook(
+    Request $request,
+    EntityManagerInterface $entityManager,
+    LoggerInterface $logger,
+    LivreRepository $bookRepository,
+    SluggerInterface $slugger,
+    ?Livre $book = null
+): Response {
+    if (!$book) {
+        $book = new Livre();
     }
+
+    if ($request->attributes->get('_route') === 'edit_Book') {
+        $id = $request->get('id');
+        $book = $bookRepository->find($id);
+        if (!$book) {
+            throw $this->createNotFoundException('No book found for id ' . $id);
+        }
+    }
+
+    $form = $this->createForm(LivreType::class, $book);
+    $form->handleRequest($request);
+
+    if ($form->isSubmitted() && $form->isValid()) {
+        $imageFile = $form->get('ImageLivre')->getData();
+        if ($imageFile) {
+            $originalFilename = pathinfo($imageFile->getClientOriginalName(), PATHINFO_FILENAME);
+            $safeFilename = $slugger->slug($originalFilename);
+            $newFilename = $safeFilename . '-' . uniqid() . '.' . $imageFile->guessExtension();
+
+            try {
+                $imageFile->move(
+                    $this->getParameter('photos_directory'),
+                    $newFilename
+                );
+            } catch (FileException $e) {
+                $logger->error('Failed to upload image: ' . $e->getMessage());
+            }
+
+            $book->setImageLivre($newFilename);
+        }
+
+        $entityManager->persist($book);
+        $entityManager->flush();
+
+        return $this->redirectToRoute('app_read');
+    }
+
+    return $this->render('livre/new.html.twig', [
+        'form' => $form->createView(),
+        'editMode' => $book->getId() !== null,
+        'book' => $book,
+    ]);
+}
 
     #[Route('/book/delete/{id}', name: 'delete_Book')]
     public function deleteBook(int $id, LivreRepository $bookRepository, EntityManagerInterface $entityManager): Response

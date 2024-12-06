@@ -18,25 +18,33 @@ class Livre
 
     #[Assert\NotBlank(message: "Le titre ne peut pas être vide.")]
     #[Assert\Length(
-        max: 255,
+        max: 20,
         maxMessage: "Le titre ne peut pas dépasser {{ limit }} caractères."
+    )]
+    #[Assert\Regex(
+        pattern: "/^\D*$/",
+        message: "Le titre ne doit pas contenir de chiffres."
     )]
     #[ORM\Column(length: 255)]
     private ?string $TitreLivre = null;
 
     #[Assert\NotBlank(message: "L'auteur ne peut pas être vide.")]
     #[Assert\Length(
-        max: 255,
+        max: 20,
         maxMessage: "Le nom de l'auteur ne peut pas dépasser {{ limit }} caractères."
+    )]
+    #[Assert\Regex(
+        pattern: "/^\D*$/",
+        message: "Le titre ne doit pas contenir de chiffres."
     )]
     #[ORM\Column(length: 255)]
     private ?string $AuteurLivre = null;
 
     #[Assert\NotBlank(message: "L'ISBN ne peut pas être vide.")]
-    // #[Assert\Isbn(
-    //     type: Assert\Isbn::ISBN_13,
-    //     message: "Veuillez fournir un ISBN valide."
-    // )]
+    #[Assert\Regex(
+        pattern: '/^\d{3}-\d{1,5}-\d{1,7}-\d{1,7}-\d{1}$/',
+        message: "L'ISBN doit respecter le format standard (ex : 978-3-16-148410-0)."
+    )]
     #[ORM\Column(length: 255)]
     private ?string $IsbnLivre = null;
 

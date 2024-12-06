@@ -173,20 +173,37 @@
         </div>
     {% endif %}
     {{ form_start(form) }}
-    <div class="form-group">
+    {# <div class="form-group">
         <label for="TitreLivre">Titre du Livre</label>
         {{ form_widget(form.TitreLivre, {'attr': {'class': 'form-control', 'id': 'TitreLivre', 'placeholder': 'Entrez le titre du livre'}}) }}
-    </div>
-
+    </div> #}
     <div class="form-group">
+    <label for="TitreLivre">Titre du Livre</label>
+    {{ form_widget(form.TitreLivre, {'attr': {'class': 'form-control', 'id': 'TitreLivre', 'placeholder': 'Entrez le titre du livre'}}) }}
+    {{ form_errors(form.TitreLivre) }}
+</div>
+
+    {# <div class="form-group">
         <label for="AuteurLivre">Auteur du Livre</label>
         {{ form_widget(form.AuteurLivre, {'attr': {'class': 'form-control', 'id': 'AuteurLivre', 'placeholder': 'Entrez l\'auteur du livre'}}) }}
+    </div> #}
+    <div class="form-group">
+    <label for="AuteurLivre">Auteur du Livre</label>
+    {{ form_widget(form.AuteurLivre, {'attr': {'class': 'form-control', 'id': 'AuteurLivre', 'placeholder': 'Entrez le nom de l\'auteur'}}) }}
+    {{ form_errors(form.AuteurLivre) }}
     </div>
 
-    <div class="form-group">
+    {# <div class="form-group">
         <label for="IsbnLivre">ISBN</label>
         {{ form_widget(form.IsbnLivre, {'attr': {'class': 'form-control', 'id': 'IsbnLivre', 'placeholder': 'Entrez l\'ISBN du livre'}}) }}
-    </div>
+    </div> #}
+
+    <div class="form-group">
+    <label for="IsbnLivre">ISBN</label>
+    {{ form_widget(form.IsbnLivre, {'attr': {'class': 'form-control', 'id': 'IsbnLivre', 'placeholder': 'Entrez un ISBN valide'}}) }}
+    {{ form_errors(form.IsbnLivre) }}
+</div>
+
 
     <div class="form-group">
         <label for="NombreExemplaireLivre">Nombre d\'Exemplaires</label>
@@ -197,6 +214,11 @@
         <label for="AnneePublicationLivre">Année de Publication</label>
         {{ form_widget(form.AnneePublicationLivre, {'attr': {'class': 'form-control', 'id': 'AnneePublicationLivre', 'placeholder': 'Entrez l\'année de publication'}}) }}
     </div>
+<div class="form-group">
+    <label for="category">Catégorie</label>
+    {{ form_widget(form.category, {'attr': {'class': 'form-control', 'id': 'category'}}) }}
+</div>
+
     {# /****** categorry****///// #}
      {# <div class="form-group">
         {{ form_label(form.categoryLivre) }}

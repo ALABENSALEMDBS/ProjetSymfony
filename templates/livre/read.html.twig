@@ -217,6 +217,7 @@
             <th>Nombre d'exemplaires</th>
             <th>Année de publication</th>
             <th>Image</th>
+            <th>Categorie</th>
             <th>Actions</th> <!-- Column for buttons -->
         </tr>
                    </thead>
@@ -233,6 +234,10 @@
             <td>
                 <img src="{{ asset('uploads/images/' ~ livre.ImageLivre) }}" alt="{{ livre.TitreLivre }}" width="100" />
             </td>
+          <td>
+        {# Vérifie si la catégorie existe avant d'afficher son nom #}
+        {{ livre.category ? livre.category.Nom : 'Pas de catégorie' }}
+    </td>
             <td>
                 <!-- Edit button -->
                 <a href="{{ path('edit_Book', {'id': livre.id}) }}" class="btn btn-warning btn-sm">

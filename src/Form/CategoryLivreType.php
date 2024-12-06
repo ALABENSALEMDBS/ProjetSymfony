@@ -19,7 +19,9 @@ class CategoryLivreType extends AbstractType
                 'attr' => [
                     'placeholder' => 'Entrez le nom de la catégorie',
                 ],
+                
             ])
+            
             ->add('DescriptionLivre', TextareaType::class, [
                 'label' => 'Description',
                 'required' => false,
