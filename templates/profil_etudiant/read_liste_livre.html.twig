@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
+  <meta name="description" content=""/>
+  <meta name="author" content=""/>
+  <title>Dashtreme Admin</title>
+  <!-- loader-->
+  <link href="{{ asset('dashboard/css/pace.min.css') }}" rel="stylesheet"/>
+  <script src="{{ asset('dashboard/js/pace.min.js') }}"></script>
+  <!--favicon-->
+  <link rel="icon" href="{{asset('dashboard/images/favicon.ico') }}" type="image/x-icon">
+  <!-- Vector CSS -->
+  <link href="{{ asset('dashboard/plugins/vectormap/jquery-jvectormap-2.0.2.css') }}" rel="stylesheet"/>
+  <!-- simplebar CSS-->
+  <link href="{{ asset('dashboard/plugins/simplebar/css/simplebar.css') }}" rel="stylesheet"/>
+  <!-- Bootstrap core CSS-->
+  <link href="{{ asset('dashboard/css/bootstrap.min.css') }}" rel="stylesheet"/>
+  <!-- animate CSS-->
+  <link href="{{ asset('dashboard/css/animate.css') }}" rel="stylesheet" type="text/css"/>
+  <!-- Icons CSS-->
+  <link href=" {{ asset('dashboard/css/icons.css') }}" rel="stylesheet" type="text/css"/>
+  <!-- Sidebar CSS-->
+  <link href="{{ asset('dashboard/css/sidebar-menu.css') }}" rel="stylesheet"/>
+  <!-- Custom Style-->
+  <link href="{{ asset('dashboard/css/app-style.css') }}" rel="stylesheet"/>
+</head>
+
+<body class="bg-theme bg-theme1">
+  <!-- Start wrapper-->
+  <div id="wrapper">
+
+    <!--Start sidebar-wrapper-->
+    <div id="sidebar-wrapper" data-simplebar="" data-simplebar-auto-hide="true">
+      <div class="brand-logo">
+        <a href="{{ path('app_dashboard') }}">
+          <img src="{{ asset('dashboard/images/logo-icon.png') }}" class="logo-icon" alt="logo icon">
+          <h5 class="logo-text">Dashtreme Admin</h5>
+        </a>
+      </div>
+    </div>
+    <!--End sidebar-wrapper-->
+
+    <!--Start topbar header-->
+    <header class="topbar-nav">
+      <nav class="navbar navbar-expand fixed-top">
+        <ul class="navbar-nav mr-auto align-items-center">
+          <li class="nav-item">
+            <a class="nav-link toggle-menu" href="javascript:void();">
+              <i class="icon-menu menu-icon"></i>
+            </a>
+          </li>
+        </ul>
+      </nav>
+    </header>
+    <!--End topbar header-->
+
+    <div class="clearfix"></div>
+
+    <!-- Main Content -->
+    <div class="content-wrapper">
+      <div class="container-fluid">
+        <div class="row">
+          <div class="col-12 col-lg-12">
+            <div class="card">
+              <div class="card-header">Liste Des Livres</div>
+              <div class="table-responsive">
+                <!-- Formulaire pour filtrer par catégorie -->
+                <form method="get" action="{{ path('app_profil_etudiant_liste') }}">
+                  <select name="category">
+                    <option value="">Toutes les catégories</option>
+                    {% for category in categories %}
+                      <option value="{{ category.id }}" {% if category.id == categoryId %}selected{% endif %}>
+                        {{ category.nom }}
+                      </option>
+                    {% endfor %}
+                  </select>
+                  
+                  <button type="submit">Filtrer</button>
+                </form>
+
+                <!-- Lien pour trier par ordre alphabétique -->
+                <a href="{{ path('app_profil_etudiant_liste', { alpha: 'true', category: categoryId }) }}">Trier par ordre alphabétique</a>
+
+                <!-- Table des livres -->
+                <table class="table table-striped">
+                  <thead>
+                    <tr>
+                      {# <th>ID</th> #}
+                      <th>Titre</th>
+                      <th>Auteur</th>
+                      {# <th>ISBN</th> #}
+                      <th>Nombre d'exemplaires</th>
+                      <th>Année de publication</th>
+                      <th>Catégorie</th>
+                      <th>Image</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {% for livre in liste %}
+                      <tr>
+                        {# <td>{{ livre.id }}</td> #}
+                        <td>{{ livre.TitreLivre|upper }}</td>
+                        <td>{{ livre.AuteurLivre }}</td>
+                        {# <td>{{ livre.IsbnLivre }}</td> #}
+                        <td>{{ livre.NombreExemplaireLivre }}</td>
+                        <td>{{ livre.AnneePublicationLivre|date('Y-m-d') }}</td>
+                        <td>{{ livre.getCategory() ? livre.getCategory().getNom() : 'Aucune catégorie' }}</td>
+                        <td>
+                          <img src="{{ asset('uploads/images/' ~ livre.ImageLivre) }}" alt="{{ livre.TitreLivre }}" width="100" />
+                        </td>
+                      </tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+  <!-- End wrapper -->
+
+</body>
+</html>

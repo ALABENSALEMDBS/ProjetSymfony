@@ -5,6 +5,7 @@ namespace App\Repository;
 use App\Entity\Livre;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
+use App\Entity\CategoryLivre;
 
 /**
  * @extends ServiceEntityRepository<Livre>
@@ -15,6 +16,25 @@ class LivreRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Livre::class);
     }
+    //extention  
+    public function findByCategory(CategoryLivre $category): array
+    {
+        return $this->createQueryBuilder('l')
+            ->andWhere('l.category = :category')
+            ->setParameter('category', $category)
+            ->getQuery()
+            ->getResult();
+    }
+    ///chercher livre
+    public function findByTitle($title)
+{
+    return $this->createQueryBuilder('b')
+                ->where('b.TitreLivre LIKE :title')
+                ->setParameter('title', '%' . $title . '%')
+                ->getQuery()
+                ->getResult();
+}
+
 
 //    /**
 //     * @return Livre[] Returns an array of Livre objects
