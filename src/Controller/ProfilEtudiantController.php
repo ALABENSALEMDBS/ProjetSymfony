@@ -53,43 +53,116 @@ public function index(Request $request, CategoryLivreRepository $categoryReposit
 // }
 
 // Route pour afficher la liste des livres avec filtre
+// #[Route('/profil/etudiant/liste', name: 'app_profil_etudiant_liste')]
+// public function read(
+//     Request $request, 
+//     LivreRepository $livreRepository, 
+//     CategoryLivreRepository $categoryLivreRepository
+// ): Response {
+//     // Récupérer les paramètres de filtre
+//     $categoryId = $request->query->get('category'); // ID de catégorie
+//     $orderByAlpha = $request->query->get('alpha');  // Tri alphabétique
+  
+
+//     $livres = [];
+//     $category = null;
+
+//     // Filtrage par catégorie
+//     if ($categoryId) {
+//         $category = $categoryLivreRepository->find($categoryId);
+//         if ($category) {
+//             $livres = $livreRepository->findBy(['category' => $category]);
+//         }
+//     } else {
+//         $livres = $livreRepository->findAll();
+//     }
+
+//     // Tri alphabétique
+//     if ($orderByAlpha === 'true') {
+//         usort($livres, fn($a, $b) => strcmp($a->getTitreLivre(), $b->getTitreLivre()));
+//     }
+
+//     return $this->render('profil_etudiant/read_liste_livre.html.twig', [
+//         'categories' => $categoryLivreRepository->findAll(), // Liste des catégories
+//         'liste' => $livres, // Liste des livres
+//         'categoryId' => $categoryId, // ID de la catégorie sélectionnée
+//         'alpha' => $orderByAlpha, // Paramètre pour tri alphabétique
+        
+//     ]);
+// }
+
+////exmple2
+// #[Route('/profil/etudiant/liste', name: 'app_profil_etudiant_liste')]
+// public function read(
+//     Request $request,
+//     LivreRepository $livreRepository,
+//     CategoryLivreRepository $categoryLivreRepository
+// ): Response {
+//     // Récupérer les paramètres de filtre
+//     $categoryId = $request->query->get('category'); // ID de catégorie
+//     $orderByAlpha = $request->query->get('alpha', 'asc'); // Tri alphabétique par défaut croissant
+
+//     // Critères pour la requête
+//     $criteria = [];
+//     $orderBy = [];
+
+//     // Ajouter le filtre par catégorie si défini
+//     if ($categoryId) {
+//         $criteria['category'] = $categoryId;
+//     }
+
+//     // Ajouter le tri alphabétique (ascendant ou descendant)
+//     if ($orderByAlpha === 'asc') {
+//         $orderBy['TitreLivre'] = 'ASC';
+//     } elseif ($orderByAlpha === 'desc') {
+//         $orderBy['TitreLivre'] = 'DESC';
+//     }
+
+//     // Récupérer les livres avec les critères et le tri
+//     $livres = $livreRepository->findBy($criteria, $orderBy);
+
+//     return $this->render('profil_etudiant/index.html.twig', [
+//         'categories' => $categoryLivreRepository->findAll(), // Liste des catégories
+//         'liste' => $livres, // Liste des livres
+//         'categoryId' => $categoryId, // ID de la catégorie sélectionnée
+//         'alpha' => $orderByAlpha, // Paramètre pour tri alphabétique
+//     ]);
+// }
+
 #[Route('/profil/etudiant/liste', name: 'app_profil_etudiant_liste')]
 public function read(
     Request $request, 
     LivreRepository $livreRepository, 
     CategoryLivreRepository $categoryLivreRepository
 ): Response {
-    // Récupérer les paramètres de filtre
-    $categoryId = $request->query->get('category'); // ID de catégorie
-    $orderByAlpha = $request->query->get('alpha');  // Tri alphabétique
-  
+    $categoryId = $request->query->get('category'); // Filtre par catégorie (peut être null)
+    $orderByAlpha = $request->query->get('alpha');  // Tri alphabétique (asc/desc)
 
-    $livres = [];
-    $category = null;
+    $queryBuilder = $livreRepository->createQueryBuilder('l');
 
-    // Filtrage par catégorie
+    // Si une catégorie est spécifiée
     if ($categoryId) {
-        $category = $categoryLivreRepository->find($categoryId);
-        if ($category) {
-            $livres = $livreRepository->findBy(['category' => $category]);
-        }
-    } else {
-        $livres = $livreRepository->findAll();
+        $queryBuilder->andWhere('l.category = :categoryId')
+                     ->setParameter('categoryId', $categoryId);
     }
 
-    // Tri alphabétique
-    if ($orderByAlpha === 'true') {
-        usort($livres, fn($a, $b) => strcmp($a->getTitreLivre(), $b->getTitreLivre()));
+    // Appliquer le tri
+    if ($orderByAlpha === 'asc') {
+        $queryBuilder->orderBy('l.TitreLivre', 'ASC');
+    } elseif ($orderByAlpha === 'desc') {
+        $queryBuilder->orderBy('l.TitreLivre', 'DESC');
     }
 
-    return $this->render('profil_etudiant/read_liste_livre.html.twig', [
-        'categories' => $categoryLivreRepository->findAll(), // Liste des catégories
-        'liste' => $livres, // Liste des livres
-        'categoryId' => $categoryId, // ID de la catégorie sélectionnée
-        'alpha' => $orderByAlpha, // Paramètre pour tri alphabétique
-        
+    $livres = $queryBuilder->getQuery()->getResult();
+
+    return $this->render('profil_etudiant/index.html.twig', [
+        'categories' => $categoryLivreRepository->findAll(), // Toutes les catégories
+        'liste' => $livres, // Livres triés
+        'categoryId' => $categoryId, // Catégorie sélectionnée (ou null)
+        'alpha' => $orderByAlpha, // Ordre de tri
     ]);
 }
+
 
 
 #[Route('/livre/reserver/{id}', name: 'app_livre_reserver')]

@@ -26,14 +26,16 @@ class LivreRepository extends ServiceEntityRepository
             ->getResult();
     }
     ///chercher livre
-    public function findByTitle($title)
+//    
+public function findByTitle($title)
 {
     return $this->createQueryBuilder('b')
-                ->where('b.TitreLivre LIKE :title')
-                ->setParameter('title', '%' . $title . '%')
-                ->getQuery()
-                ->getResult();
+        ->where('b.TitreLivre LIKE :title')
+        ->setParameter('title', '%' . $title . '%')
+        ->getQuery()
+        ->getResult();
 }
+
 
 
 //    /**
